@@ -6199,7 +6199,7 @@ function renderStudentDetail(studentId) {
 
     <!-- Karten-Layout als Standard -->
 
-    <div id="detailView">
+    <div id="detailView" style="display: none;">
       <div class="container">
         ${renderPersonalInfo(student)}
         ${renderFahrtenSection(student)}
@@ -6207,7 +6207,7 @@ function renderStudentDetail(studentId) {
       </div>
     </div>
 
-    <div id="cardView" class="card-view" style="display: none;">
+    <div id="cardView" class="card-view">
       <div class="container">
         ${renderPersonalInfo(student)}
         ${renderFahrtenSection(student)}
