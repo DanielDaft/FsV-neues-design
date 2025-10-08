@@ -9611,15 +9611,16 @@ function getCurrentStudentId() {
 }
 
 function refreshCardView(studentId) {
-  const currentStudentObj = getCurrentStudent();
-  if (currentStudentObj && currentStudentObj.id === studentId && document.getElementById('cardView')) {
-    const cardViewHTML = renderCardView(currentStudentObj);
+  // Direkte Aktualisierung ohne getCurrentStudent
+  const student = StorageManager.getStudentById(studentId, currentClass);
+  if (student && document.getElementById('cardView')) {
+    const cardViewHTML = renderCardView(student);
     const cardViewElement = document.getElementById('cardView');
     
     // Nur den Inhalt der Kartenansicht aktualisieren, nicht das ganze Element
     cardViewElement.innerHTML = cardViewHTML;
     
-    console.log('✅ Kartenansicht aktualisiert für:', categoryKey || 'alle Kategorien');
+    console.log('✅ Kartenansicht aktualisiert für Schüler:', studentId);
     
     // Event Delegation für dynamisch erstellte Kreise einrichten
     setupCardViewEventDelegation(studentId);
