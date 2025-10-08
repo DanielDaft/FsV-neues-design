@@ -6475,32 +6475,82 @@ function renderFahrtType(student, title, category, maxCount, canAddRemove) {
 }
 
 function renderTrainingProgress(student) {
-  // Toggle-Button nur für Klasse B anzeigen
-  const showToggle = currentClass === 'B';
-  
   let html = `
     <div class="section">
       <div class="section-header">
         <div class="section-icon">📋</div>
         <div class="section-title">Ausbildungsfortschritt</div>
-        ${showToggle ? `
-        <div class="view-toggle">
-          <button id="detailViewBtn" class="view-btn active" onclick="switchToDetailView()">
-            📋 Detail
-          </button>
-          <button id="cardViewBtn" class="view-btn" onclick="switchToCardView()">
-            🗂️ Karte
-          </button>
-        </div>
-        ` : ''}
       </div>
     </div>
     
-    <!-- Detailansicht (bestehend) -->
-    <div id="detailView" class="detail-view">
+    <!-- Kartenansicht als Standard-Detail-Design -->
+    <div class="card-layout">
   `;
 
-  Object.entries(getTrainingCategoriesForClass(currentClass)).forEach(([key, category]) => {
+  // Verwende das Karten-Layout für alle Klassen, nicht nur B
+  if (currentClass === 'B') {
+    html += `
+      <!-- Erste Reihe: Grundstufe, Aufbaustufe, Leistungsstufe (3 Spalten) -->
+      <div class="card-row card-row-three">
+        <div class="card-column">
+          ${renderCardCategory(student, 'grundstufe', 'GRUNDSTUFE', '#F59E0B')}
+        </div>
+        <div class="card-column">
+          ${renderCardCategory(student, 'aufbaustufe', 'AUFBAUSTUFE', '#F97316')}
+        </div>
+        <div class="card-column">
+          ${renderCardCategory(student, 'leistungsstufe', 'LEISTUNGSSTUFE', '#EF4444')}
+        </div>
+      </div>
+      
+      <!-- Zweite Reihe: Grundfahraufgaben (breit), Reife- und Teststufe (schmal) -->
+      <div class="card-row card-row-unequal">
+        <div class="card-column card-column-wide">
+          ${renderCardCategory(student, 'grundfahraufgaben', 'GRUNDFAHRAUFGABEN', '#8B5CF6')}
+        </div>
+        <div class="card-column card-column-narrow">
+          ${renderCardCategory(student, 'reife_teststufe', 'REIFE- UND TESTSTUFE', '#22C55E')}
+        </div>
+      </div>
+      
+      <!-- Dritte Reihe: Sonderfahrten (3 Spalten) -->
+      <div class="card-row card-row-three">
+        <div class="card-column">
+          ${renderCardCategory(student, 'uberlandfahrten', 'ÜBERLANDFAHRTEN', '#EAB308')}
+        </div>
+        <div class="card-column">
+          ${renderCardCategory(student, 'autobahn', 'AUTOBAHNFAHRTEN', '#EAB308')}
+        </div>
+        <div class="card-column">
+          ${renderCardCategory(student, 'dammerung_dunkelheit', 'DÄMMERUNG/DUNKELHEIT', '#EAB308')}
+        </div>
+      </div>
+    `;
+  } else {
+    // Für andere Klassen: Automatisches Layout basierend auf verfügbaren Kategorien
+    const categories = getTrainingCategoriesForClass(currentClass);
+    const categoryEntries = Object.entries(categories);
+    
+    // Erstelle Rows mit je 3 Kategorien
+    for (let i = 0; i < categoryEntries.length; i += 3) {
+      html += `<div class="card-row card-row-three">`;
+      
+      for (let j = 0; j < 3 && (i + j) < categoryEntries.length; j++) {
+        const [categoryKey, category] = categoryEntries[i + j];
+        html += `
+          <div class="card-column">
+            ${renderCardCategory(student, categoryKey, category.name.toUpperCase(), category.color || '#6B7280')}
+          </div>
+        `;
+      }
+      
+      html += `</div>`;
+    }
+  }
+
+  html += `</div>`; // Schließe card-layout
+
+  return html;
     const progress = StorageManager.getProgressForStudent(student.id, currentClass);
     const categoryProgress = progress[key] || {};
     
