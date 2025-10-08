@@ -1826,12 +1826,11 @@ border-left-color: #06B6D4 !important; /* Türkis - Checkliste */
 }
 
 .card-row-situative {
-  /* Situative Bausteine - 3 Spalten Layout ohne Überlappungen */
+  /* Situative Bausteine - 3 Spalten Layout mit minimalen Abständen */
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* Feste 3 Spalten */
-  gap: 12px;
+  gap: 6px; /* Sehr kleine Abstände zwischen den blauen Boxen */
   align-items: start;
-  /* Jede Box bekommt ihren vollständigen Platz ohne Überschneidung */
   grid-auto-rows: auto;
 }
 }
