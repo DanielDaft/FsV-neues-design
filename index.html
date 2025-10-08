@@ -6198,9 +6198,9 @@ function renderStudentDetail(studentId) {
 
   document.getElementById('app').innerHTML = html;
   
-  // Event Delegation für Karten-Elemente in Detail-Ansicht einrichten
+  // Event Delegation für alle Elemente in Detail-Ansicht einrichten
   setTimeout(() => {
-    setupDetailCardEventDelegation(student.id);
+    setupDetailEventDelegation(student.id);
   }, 100);
   
   // Theme Toggle nach dem Rendering wieder einfügen
