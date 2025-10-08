@@ -9675,28 +9675,51 @@ function setupCardViewEventDelegation(studentId) {
   }
 }
 
-// Event Delegation für Detail-Ansicht mit Karten-Layout
-function setupDetailCardEventDelegation(studentId) {
+// Vereinheitlichte Event Delegation für Detail-Ansicht mit Karten-Layout
+function setupDetailEventDelegation(studentId) {
   const container = document.querySelector('.container');
   if (!container) return;
   
   // Entferne vorherige Event Listener
-  container.removeEventListener('click', handleDetailCardClick);
+  container.removeEventListener('click', handleDetailClick);
   
   // Füge Event Listener hinzu
-  container.addEventListener('click', handleDetailCardClick);
+  container.addEventListener('click', handleDetailClick);
   
-  function handleDetailCardClick(event) {
-    event.stopPropagation();
-    
+  function handleDetailClick(event) {
     const target = event.target;
     const currentStudentObj = getCurrentStudent();
     if (!currentStudentObj) return;
+    
+    console.log('Detail Click Event:', target.classList.toString(), target);
+    
+    // Checkboxen für Fortschritt-Items (ALLE CHECKBOXEN)
+    if (target.classList.contains('progress-checkbox')) {
+      const progressItem = target.closest('.progress-item');
+      if (progressItem) {
+        const clickableItem = target.closest('[onclick]');
+        if (clickableItem && clickableItem.onclick) {
+          clickableItem.onclick(event);
+          event.preventDefault();
+          return false;
+        }
+        
+        // Fallback für Card-Items
+        const cardItem = target.closest('.section-item');
+        if (cardItem && cardItem.onclick) {
+          cardItem.onclick(event);
+          event.preventDefault();
+          return false;
+        }
+      }
+    }
     
     // UE Kreise - Hinzufügen
     if (target.classList.contains('add-circle-btn') && target.classList.contains('ue-circle')) {
       const categoryDiv = target.closest('[data-category]');
       const categoryKey = categoryDiv?.getAttribute('data-category');
+      
+      console.log('UE Add Circle clicked:', categoryKey);
       
       if (categoryKey) {
         addCategoryUECircle(currentStudentObj.id, categoryKey);
@@ -9713,6 +9736,8 @@ function setupDetailCardEventDelegation(studentId) {
       // Index aus dem Text des Kreises extrahieren
       const circleNumber = parseInt(target.textContent) - 1;
       
+      console.log('UE Remove Circle clicked:', categoryKey, circleNumber);
+      
       if (categoryKey && !isNaN(circleNumber)) {
         removeCategoryUECircle(currentStudentObj.id, categoryKey, circleNumber);
         event.preventDefault();
@@ -9724,6 +9749,8 @@ function setupDetailCardEventDelegation(studentId) {
     if (target.classList.contains('add-circle-btn') && target.classList.contains('quarter-circle')) {
       const categoryDiv = target.closest('[data-category]');
       const categoryKey = categoryDiv?.getAttribute('data-category');
+      
+      console.log('Quarter Add Circle clicked:', categoryKey);
       
       if (categoryKey) {
         addCategoryQuarterCircle(currentStudentObj.id, categoryKey);
@@ -9742,6 +9769,8 @@ function setupDetailCardEventDelegation(studentId) {
       const allQuarterCircles = Array.from(quarterRow.querySelectorAll('.quarter-circle:not(.add-circle-btn)'));
       const circleIndex = allQuarterCircles.indexOf(target);
       
+      console.log('Quarter Toggle Circle clicked:', categoryKey, circleIndex);
+      
       if (categoryKey && circleIndex !== -1) {
         toggleCategoryQuarterCircle(currentStudentObj.id, categoryKey, circleIndex);
         event.preventDefault();
@@ -9757,8 +9786,52 @@ function setupDetailCardEventDelegation(studentId) {
       // Index aus dem Text des Kreises extrahieren
       const circleNumber = parseInt(target.textContent) - 1;
       
+      console.log('Blue PS Circle clicked:', categoryKey, circleNumber);
+      
       if (categoryKey && !isNaN(circleNumber)) {
         toggleBlueCircle(currentStudentObj.id, categoryKey, circleNumber);
+        event.preventDefault();
+        return false;
+      }
+    }
+    
+    // Fahrt Kreise - für Übungsfahrten etc.
+    if (target.classList.contains('circle-btn')) {
+      const category = target.getAttribute('data-category');
+      const index = parseInt(target.getAttribute('data-index'));
+      
+      console.log('Fahrt Circle clicked:', category, index);
+      
+      if (category && !isNaN(index)) {
+        if (target.onclick) {
+          target.onclick(event);
+        }
+        event.preventDefault();
+        return false;
+      }
+    }
+    
+    // Fahrt Buttons - normale Fahrt-Buttons
+    if (target.classList.contains('fahrt-btn')) {
+      const category = target.getAttribute('data-category');
+      const index = parseInt(target.getAttribute('data-index'));
+      
+      console.log('Fahrt Button clicked:', category, index);
+      
+      if (category && !isNaN(index)) {
+        if (target.onclick) {
+          target.onclick(event);
+        }
+        event.preventDefault();
+        return false;
+      }
+    }
+    
+    // Training Section Headers (Aufklappen/Zuklappen)
+    if (target.closest('.training-header')) {
+      const header = target.closest('.training-header');
+      if (header && header.onclick) {
+        header.onclick(event);
         event.preventDefault();
         return false;
       }
