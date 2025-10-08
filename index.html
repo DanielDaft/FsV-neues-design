@@ -6168,6 +6168,10 @@ function renderStudentDetail(studentId) {
 
   selectedStudent = student;
   
+  // Speichere aktuellen Schüler global für Event-Handler
+  window.currentStudentData = student;
+  window.location.hash = `#student/${studentId}`;
+  
   const classDisplayName = currentClass;
 
   let html = `
