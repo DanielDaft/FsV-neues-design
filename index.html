@@ -9186,10 +9186,17 @@ function renderCardView(student) {
         </div>
       </div>
       
-      <!-- Reihe 2: Grundfahraufgaben (über 2 Spalten breit), Reife u. Teststufe -->
+      <!-- Reihe 2: Grundfahraufgaben + weitere Kategorie (beide über 2 Spalten breit), Reife u. Teststufe -->
       <div class="card-row card-row-unequal">
         <div class="card-column card-column-wide">
-          ${renderCardCategory(student, 'grundfahraufgaben', 'GRUNDFAHRAUFGABEN', '#8B5CF6')}
+          <div class="card-row card-row-two">
+            <div class="card-column">
+              ${renderCardCategory(student, 'grundfahraufgaben', 'GRUNDFAHRAUFGABEN', '#8B5CF6')}
+            </div>
+            <div class="card-column">
+              ${renderCardCategory(student, 'verkehrsbeobachtung', 'VERKEHRSBEOBACHTUNG', '#7C3AED')}
+            </div>
+          </div>
         </div>
         <div class="card-column card-column-narrow">
           ${renderCardCategory(student, 'reife_teststufe', 'REIFE- UND TESTSTUFE', '#22C55E')}
@@ -9209,10 +9216,17 @@ function renderCardView(student) {
         </div>
       </div>
       
-      <!-- Reihe 4: Situative Bausteine (über 2 Spalten breit), Assistenzsysteme und darunter Heizung und Lüftung -->
+      <!-- Reihe 4: Situative Bausteine + weitere blaue Kategorien (über 2 Spalten), Assistenzsysteme und Heizung gestapelt -->
       <div class="card-row card-row-unequal">
         <div class="card-column card-column-wide">
-          ${renderCardCategory(student, 'situative_bausteine', 'SITUATIVE BAUSTEINE', '#06B6D4')}
+          <div class="card-row card-row-two">
+            <div class="card-column">
+              ${renderCardCategory(student, 'situative_bausteine', 'SITUATIVE BAUSTEINE', '#06B6D4')}
+            </div>
+            <div class="card-column">
+              ${renderCardCategory(student, 'beim_fahrzeug', 'BEIM FAHRZEUG', '#0891B2')}
+            </div>
+          </div>
         </div>
         <div class="card-column card-column-narrow">
           <div class="right-column-stacked">
@@ -9222,7 +9236,7 @@ function renderCardView(student) {
         </div>
       </div>
       
-      <!-- Reihe 5: Betriebs und Verkehrssicherheit, Witterung -->
+      <!-- Reihe 5: Betriebs- und Verkehrssicherheit, Witterung -->
       <div class="card-row card-row-two">
         <div class="card-column">
           ${renderCardCategory(student, 'betriebs_verkehrssicherheit', 'BETRIEBS- UND VERKEHRSSICHERHEIT', '#F59E0B')}
@@ -9230,6 +9244,11 @@ function renderCardView(student) {
         <div class="card-column">
           ${renderCardCategory(student, 'witterungsverhaeltnisse', 'WITTERUNG', '#8B5CF6')}
         </div>
+      </div>
+      
+      <!-- Weitere blaue Kategorien falls vorhanden -->
+      <div class="card-row card-row-situative">
+        ${renderWeitereKategorien(student)}
       </div>
     `;
   } else {
