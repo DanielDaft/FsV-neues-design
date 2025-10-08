@@ -6551,63 +6551,6 @@ function renderTrainingProgress(student) {
   html += `</div>`; // Schließe card-layout
 
   return html;
-    const progress = StorageManager.getProgressForStudent(student.id, currentClass);
-    const categoryProgress = progress[key] || {};
-    
-    let completedItems = 0; // Gewichtete Punkte für Prozentberechnung
-    let treatedItems = 0;   // Einfache Anzahl behandelter Items für Klammer-Anzeige
-    const totalItems = countTotalItems(category.sections);
-
-    function countCompletedItems(sections) {
-      Object.entries(sections).forEach(([sectionKey, section]) => {
-        if (section.sections) {
-          countCompletedItems(section.sections);
-        } else if (section.items) {
-          section.items.forEach(item => {
-            const status = categoryProgress[sectionKey] && categoryProgress[sectionKey][item];
-            // KORRIGIERTE 3-STUFEN-BERECHNUNG für Prozente
-            if (status === 'once') {
-              completedItems += 0.33; // 🔴 ROT (/) = 33%
-              treatedItems++; // +1 behandeltes Item
-            } else if (status === 'twice') {
-              completedItems += 0.66; // 🟡 GELB (×) = 66%
-              treatedItems++; // +1 behandeltes Item
-            } else if (status === 'thrice') {
-              completedItems += 1.0;  // 🟢 GRÜN (⊗) = 100%
-              treatedItems++; // +1 behandeltes Item
-            }
-          });
-        }
-      });
-    }
-
-    countCompletedItems(category.sections);
-
-    const percentage = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
-    const expanded = key === 'grundstufe';
-
-    html += `
-      <div class="training-section">
-        <div class="training-header ${key}" onclick="toggleTrainingSection('${key}')">
-          ${renderCategoryHeader(student.id, category, key, percentage, treatedItems, totalItems)}
-        </div>
-        <div id="section-${key}" class="training-content ${expanded ? 'expanded' : ''}">
-          <div class="training-items">
-            ${renderTrainingItems(category.sections, key, student.id)}
-          </div>
-        </div>
-      </div>
-    `;
-  });
-
-  html += `
-    </div>
-    
-    <!-- Kartenansicht (neu) - nur für Klasse B -->
-    ${showToggle ? renderCardView(student) : ''}
-  `;
-
-  return html;
 }
 
 function renderTrainingItems(sections, categoryKey, studentId) {
