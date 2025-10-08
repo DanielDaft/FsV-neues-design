@@ -5081,9 +5081,17 @@ const StorageManager = {
   },
 
   initDemoData() {
-    const existing = this.getStudents('BE');
-    if (existing.length === 0) {
-      this.saveStudents(DEMO_STUDENTS, 'BE');
+    // Demo-Schüler automatisch in entsprechende Klasse speichern
+    if (DEMO_STUDENTS.length > 0 && !localStorage.getItem('demo_loaded_v2')) {
+      DEMO_STUDENTS.forEach(demoStudent => {
+        const targetClass = demoStudent.class || 'B';
+        const existing = this.getStudents(targetClass);
+        if (existing.length === 0) {
+          this.saveStudents([demoStudent], targetClass);
+        }
+      });
+      localStorage.setItem('demo_loaded_v2', 'true');
+      console.log(`✅ ${DEMO_STUDENTS.length} Demo-Schüler geladen`);
     }
   },
 
