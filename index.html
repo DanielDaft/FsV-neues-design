@@ -9098,11 +9098,19 @@ function renderStandardHeader(category, percentage, treatedItems, totalItems) {
 
 // NEUE KARTENANSICHT FÜR KLASSE B - WIE ECHTE AUSBILDUNGSDIAGRAMMKARTE
 function renderCardView(student) {
-  if (currentClass !== 'B') return '';
+  // Für alle Klassen das Karten-Design verwenden
+  const categories = getTrainingCategoriesForClass(currentClass);
+  const categoryEntries = Object.entries(categories);
   
-  return `
-    <div class="card-layout">
-      
+  if (categoryEntries.length === 0) {
+    return '<div class="card-layout"><p>Keine Kategorien für diese Klasse verfügbar.</p></div>';
+  }
+  
+  let html = '<div class="card-layout">';
+  
+  // Spezielle Behandlung für Klasse B (behält das Original-Layout)
+  if (currentClass === 'B') {
+    html += `
       <!-- Erste Reihe: Grundstufe, Aufbaustufe, Leistungsstufe (3 Spalten) -->
       <div class="card-row card-row-three">
         <div class="card-column">
@@ -9143,9 +9151,38 @@ function renderCardView(student) {
       <div class="card-row card-row-situative">
         ${renderSituativeBausteine(student)}
       </div>
+    `;
+  } else {
+    // Für alle anderen Klassen: Automatisches 3-Spalten-Layout mit ihren spezifischen Kategorien
+    const colors = ['#F59E0B', '#F97316', '#EF4444', '#8B5CF6', '#22C55E', '#EAB308', '#10B981', '#3B82F6', '#6366F1', '#8B5CF6'];
+    
+    // Erstelle Rows mit je 3 Kategorien
+    for (let i = 0; i < categoryEntries.length; i += 3) {
+      html += `<div class="card-row card-row-three">`;
       
-    </div>
-  `;
+      for (let j = 0; j < 3 && (i + j) < categoryEntries.length; j++) {
+        const [categoryKey, category] = categoryEntries[i + j];
+        const color = colors[(i + j) % colors.length];
+        
+        html += `
+          <div class="card-column">
+            ${renderCardCategory(student, categoryKey, category.name.toUpperCase(), color)}
+          </div>
+        `;
+      }
+      
+      // Fülle leere Spalten auf, falls weniger als 3 Kategorien in der Reihe
+      const remainingSlots = 3 - Math.min(3, categoryEntries.length - i);
+      for (let k = 0; k < remainingSlots; k++) {
+        html += `<div class="card-column"></div>`;
+      }
+      
+      html += `</div>`;
+    }
+  }
+  
+  html += '</div>';
+  return html;
 }
 
 function renderCardCategory(student, categoryKey, title, color) {
