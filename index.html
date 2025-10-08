@@ -9614,22 +9614,15 @@ function refreshCardView(studentId) {
   const currentStudentObj = getCurrentStudent();
   if (currentStudentObj && currentStudentObj.id === studentId && document.getElementById('cardView')) {
     const cardViewHTML = renderCardView(currentStudentObj);
-    const cardViewContainer = document.getElementById('cardView').parentNode;
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = cardViewHTML;
-    const newCardView = tempDiv.querySelector('#cardView');
+    const cardViewElement = document.getElementById('cardView');
     
-    if (newCardView) {
-      document.getElementById('cardView').replaceWith(newCardView);
-      // Kartenansicht wieder anzeigen falls aktiv
-      const cardViewBtn = document.getElementById('cardViewBtn');
-      if (cardViewBtn && cardViewBtn.classList.contains('active')) {
-        newCardView.style.display = 'block';
-      }
-      
-      // Event Delegation für dynamisch erstellte Kreise einrichten
-      setupCardViewEventDelegation(studentId);
-    }
+    // Nur den Inhalt der Kartenansicht aktualisieren, nicht das ganze Element
+    cardViewElement.innerHTML = cardViewHTML;
+    
+    console.log('✅ Kartenansicht aktualisiert für:', categoryKey || 'alle Kategorien');
+    
+    // Event Delegation für dynamisch erstellte Kreise einrichten
+    setupCardViewEventDelegation(studentId);
   }
 }
 
