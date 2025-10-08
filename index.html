@@ -9642,27 +9642,37 @@ function renderSonderfahrtenItemCard(studentId, categoryKey, sectionKey, item) {
 // KARTENANSICHT VERWENDET JETZT DIE GLEICHEN FUNKTIONEN WIE DETAILANSICHT
 // Keine separaten Funktionen mehr nötig - alles läuft über die bestehenden Detail-Funktionen
 
-function renderRestlicheSituativeBausteine(student) {
-  // Restliche blaue Kategorien - die noch nicht platziert wurden
-  const situativeCategories = [
-    'beim_fahrer',
-    'betriebs_verkehrssicherheit',
-    'heizung_luftung',
-    'betriebs_verkehrssicherheit',
-    'witterung'
+function renderWeitereKategorien(student) {
+  // Alle weiteren Kategorien, die nicht bereits platziert wurden
+  const platziertekategorien = [
+    'grundstufe', 'aufbaustufe', 'leistungsstufe', 'grundfahraufgaben', 'verkehrsbeobachtung',
+    'reife_teststufe', 'uberlandfahrten', 'autobahn', 'dammerung_dunkelheit', 
+    'situative_bausteine', 'beim_fahrzeug', 'fahrerassistenzsysteme', 
+    'heizung_lueftung', 'betriebs_verkehrssicherheit', 'witterungsverhaeltnisse'
   ];
   
   const categories = getTrainingCategoriesForClass(currentClass);
-  let html = '';
+  const verfuegbareKategorien = Object.keys(categories);
   
-  situativeCategories.forEach(categoryKey => {
-    const category = categories[categoryKey];
-    if (category) {
+  let html = '';
+  let spaltenAnzahl = 0;
+  
+  verfuegbareKategorien.forEach(categoryKey => {
+    // Nur Kategorien verwenden, die noch nicht platziert wurden
+    if (!platziertekategorien.includes(categoryKey)) {
+      const category = categories[categoryKey];
+      
       html += `
-        <div class="card-column situative-column">
-          ${renderCardCategory(student, categoryKey, category.name.toUpperCase(), '#60A5FA')}
+        <div class="card-category" data-category="${categoryKey}">
+          <div class="card-header" style="background-color: #60A5FA;">
+            <div class="card-title" style="color: white;">${category.name.toUpperCase()}</div>
+          </div>
+          <div class="card-items">
+            ${renderCategoryItems(student, categoryKey, category)}
+          </div>
         </div>
       `;
+      spaltenAnzahl++;
     }
   });
   
