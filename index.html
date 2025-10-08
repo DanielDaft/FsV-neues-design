@@ -3619,25 +3619,24 @@ body .training-header .training-info-with-circles {
 }
 }
 
-/* CSS für das spezielle Layout genau nach Beschreibung */
-.card-row-two {
+/* CSS für das spezielle Layout wie im Bild */
+.card-row-two-small {
   display: flex;
-  gap: 12px;
-  align-items: stretch;
+  gap: 6px;
 }
 
-.card-row-two .card-column {
+.small-card-column {
   flex: 1;
 }
 
-.right-column-stacked {
+.card-row-stacked {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.right-column-stacked .card-category {
-  margin-bottom: 6px;
+.stacked-card {
+  flex: 1;
 }
 
 /* Responsive Layout für situative Bausteine */
@@ -3815,11 +3814,6 @@ const DEMO_STUDENTS = [
 
 // FUNKTION: Kategorien für spezifische Klassen abrufen
 function getTrainingCategoriesForClass(className) {
-  if (className === 'B') {
-    // Klasse B verwendet die vollständigen TRAINING_CATEGORIES
-    return TRAINING_CATEGORIES;
-  }
-  
   if (className === 'BE') {
     // BE verwendet B-Struktur, aber mit BE-spezifischen Texten und Inhalten
     return {
@@ -9178,7 +9172,7 @@ function renderCardView(student) {
   // Spezielle Behandlung für Klasse B (behält das Original-Layout)
   if (currentClass === 'B') {
     html += `
-      <!-- Reihe 1: Grundstufe, Aufbaustufe, Leistungsstufe -->
+      <!-- Erste Reihe: Grundstufe, Aufbaustufe, Leistungsstufe (3 Spalten) -->
       <div class="card-row card-row-three">
         <div class="card-column">
           ${renderCardCategory(student, 'grundstufe', 'GRUNDSTUFE', '#F59E0B')}
@@ -9191,69 +9185,56 @@ function renderCardView(student) {
         </div>
       </div>
       
-      <!-- Reihe 2: Grundfahraufgaben + weitere Kategorie (beide über 2 Spalten breit), Reife u. Teststufe -->
+      <!-- Zweite Reihe: Grundfahraufgaben (breit), Reife- und Teststufe -->
       <div class="card-row card-row-unequal">
         <div class="card-column card-column-wide">
-          <div class="card-row card-row-two">
-            <div class="card-column">
-              ${renderCardCategory(student, 'grundfahraufgaben', 'GRUNDFAHRAUFGABEN', '#8B5CF6')}
-            </div>
-            <div class="card-column">
-              ${renderCardCategory(student, 'verkehrsbeobachtung', 'VERKEHRSBEOBACHTUNG', '#7C3AED')}
-            </div>
-          </div>
+          ${renderCardCategory(student, 'grundfahraufgaben', 'GRUNDFAHRAUFGABEN', '#8B5CF6')}
         </div>
         <div class="card-column card-column-narrow">
           ${renderCardCategory(student, 'reife_teststufe', 'REIFE- UND TESTSTUFE', '#22C55E')}
         </div>
       </div>
       
-      <!-- Reihe 3: Überland, Autobahn, Dämmerung -->
+      <!-- Dritte Reihe: Überlandfahrten + Autobahnfahrten (links), Dämmerung (mitte), Assistenzsysteme (rechts) -->
       <div class="card-row card-row-three">
         <div class="card-column">
-          ${renderCardCategory(student, 'uberlandfahrten', 'ÜBERLANDFAHRTEN', '#EAB308')}
-        </div>
-        <div class="card-column">
-          ${renderCardCategory(student, 'autobahn', 'AUTOBAHNFAHRTEN', '#EAB308')}
+          <div class="card-row card-row-two-small">
+            <div class="small-card-column">
+              ${renderCardCategory(student, 'uberlandfahrten', 'ÜBERLANDFAHRTEN', '#EAB308')}
+            </div>
+            <div class="small-card-column">
+              ${renderCardCategory(student, 'autobahn', 'AUTOBAHNFAHRTEN', '#EAB308')}
+            </div>
+          </div>
         </div>
         <div class="card-column">
           ${renderCardCategory(student, 'dammerung_dunkelheit', 'DÄMMERUNG/DUNKELHEIT', '#EAB308')}
         </div>
+        <div class="card-column">
+          ${renderCardCategory(student, 'fahrerassistenzsysteme', 'ASSISTENZSYSTEME', '#3B82F6')}
+        </div>
       </div>
       
-      <!-- Reihe 4: Situative Bausteine + weitere blaue Kategorien (über 2 Spalten), Assistenzsysteme und Heizung gestapelt -->
+      <!-- Vierte Reihe: Situative Bausteine (breit), Heizung + Witterung (rechts gestapelt) -->
       <div class="card-row card-row-unequal">
         <div class="card-column card-column-wide">
-          <div class="card-row card-row-two">
-            <div class="card-column">
-              ${renderCardCategory(student, 'situative_bausteine', 'SITUATIVE BAUSTEINE', '#06B6D4')}
-            </div>
-            <div class="card-column">
-              ${renderCardCategory(student, 'beim_fahrzeug', 'BEIM FAHRZEUG', '#0891B2')}
-            </div>
-          </div>
+          ${renderCardCategory(student, 'situative_bausteine', 'SITUATIVE BAUSTEINE', '#06B6D4')}
         </div>
         <div class="card-column card-column-narrow">
-          <div class="right-column-stacked">
-            ${renderCardCategory(student, 'fahrerassistenzsysteme', 'ASSISTENZSYSTEME', '#3B82F6')}
-            ${renderCardCategory(student, 'heizung_lueftung', 'HEIZUNG UND LÜFTUNG', '#10B981')}
+          <div class="card-row card-row-stacked">
+            <div class="stacked-card">
+              ${renderCardCategory(student, 'heizung_lueftung', 'HEIZUNG UND LÜFTUNG', '#10B981')}
+            </div>
+            <div class="stacked-card">
+              ${renderCardCategory(student, 'witterungsverhaeltnisse', 'WITTERUNG', '#8B5CF6')}
+            </div>
           </div>
         </div>
       </div>
       
-      <!-- Reihe 5: Betriebs- und Verkehrssicherheit, Witterung -->
-      <div class="card-row card-row-two">
-        <div class="card-column">
-          ${renderCardCategory(student, 'betriebs_verkehrssicherheit', 'BETRIEBS- UND VERKEHRSSICHERHEIT', '#F59E0B')}
-        </div>
-        <div class="card-column">
-          ${renderCardCategory(student, 'witterungsverhaeltnisse', 'WITTERUNG', '#8B5CF6')}
-        </div>
-      </div>
-      
-      <!-- Weitere blaue Kategorien falls vorhanden -->
+      <!-- Fünfte Reihe: Restliche situative Bausteine -->
       <div class="card-row card-row-situative">
-        ${renderWeitereKategorien(student)}
+        ${renderRestlicheSituativeBausteine(student)}
       </div>
     `;
   } else {
@@ -9647,37 +9628,27 @@ function renderSonderfahrtenItemCard(studentId, categoryKey, sectionKey, item) {
 // KARTENANSICHT VERWENDET JETZT DIE GLEICHEN FUNKTIONEN WIE DETAILANSICHT
 // Keine separaten Funktionen mehr nötig - alles läuft über die bestehenden Detail-Funktionen
 
-function renderWeitereKategorien(student) {
-  // Alle weiteren Kategorien, die nicht bereits platziert wurden
-  const platziertekategorien = [
-    'grundstufe', 'aufbaustufe', 'leistungsstufe', 'grundfahraufgaben', 'verkehrsbeobachtung',
-    'reife_teststufe', 'uberlandfahrten', 'autobahn', 'dammerung_dunkelheit', 
-    'situative_bausteine', 'beim_fahrzeug', 'fahrerassistenzsysteme', 
-    'heizung_lueftung', 'betriebs_verkehrssicherheit', 'witterungsverhaeltnisse'
+function renderRestlicheSituativeBausteine(student) {
+  // Restliche blaue Kategorien - die noch nicht platziert wurden
+  const situativeCategories = [
+    'beim_fahrer',
+    'betriebs_verkehrssicherheit',
+    'heizung_luftung',
+    'betriebs_verkehrssicherheit',
+    'witterung'
   ];
   
   const categories = getTrainingCategoriesForClass(currentClass);
-  const verfuegbareKategorien = Object.keys(categories);
-  
   let html = '';
-  let spaltenAnzahl = 0;
   
-  verfuegbareKategorien.forEach(categoryKey => {
-    // Nur Kategorien verwenden, die noch nicht platziert wurden
-    if (!platziertekategorien.includes(categoryKey)) {
-      const category = categories[categoryKey];
-      
+  situativeCategories.forEach(categoryKey => {
+    const category = categories[categoryKey];
+    if (category) {
       html += `
-        <div class="card-category" data-category="${categoryKey}">
-          <div class="card-header" style="background-color: #60A5FA;">
-            <div class="card-title" style="color: white;">${category.name.toUpperCase()}</div>
-          </div>
-          <div class="card-items">
-            ${renderCategoryItems(student, categoryKey, category)}
-          </div>
+        <div class="card-column situative-column">
+          ${renderCardCategory(student, categoryKey, category.name.toUpperCase(), '#60A5FA')}
         </div>
       `;
-      spaltenAnzahl++;
     }
   });
   
