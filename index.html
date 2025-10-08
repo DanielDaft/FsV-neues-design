@@ -3611,6 +3611,29 @@ body .training-header .training-info-with-circles {
   height: 28px !important;
 }
 }
+
+/* Responsive Layout für situative Bausteine */
+@media (max-width: 1024px) {
+  .card-row-situative {
+    grid-template-columns: repeat(2, 1fr); /* Tablet: 2 Spalten */
+  }
+}
+
+@media (max-width: 768px) {
+  .card-row-situative {
+    grid-template-columns: 1fr; /* Handy: 1 Spalte */
+  }
+  
+  .card-row {
+    flex-direction: column; /* Hauptkarten untereinander im Hochformat */
+    gap: 16px;
+  }
+  
+  .card-row-three, .card-row-unequal {
+    display: flex;
+    flex-direction: column;
+  }
+}
 }
 </style>
 </head>
