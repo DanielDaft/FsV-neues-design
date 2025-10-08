@@ -9252,11 +9252,15 @@ function renderCardCircles(student, categoryKey) {
     const quarterCircles = progress[`${categoryKey}_header_quarters`] || [];
 
     return `
-      <div class="card-circles grundstufe-circles">
+      <div class="card-circles grundstufe-circles" data-category="${categoryKey}">
         <div class="circle-row">
           <span style="color: #3b82f6; font-weight: 600; font-size: 14px; margin-right: 8px;">PS:</span>
           ${blueCircles.map((filled, index) => `
-            <div class="ue-circle ${filled ? 'blue-filled' : 'blue-empty'}" title="PS ${index + 1} - Klick zum Füllen/Leeren">
+            <div class="ue-circle ${filled ? 'blue-filled' : 'blue-empty'}" 
+                 data-category="${categoryKey}" 
+                 data-index="${index}"
+                 onclick="toggleBlueCircle('${student.id}', '${categoryKey}', ${index})"
+                 title="PS ${index + 1} - Klick zum Füllen/Leeren">
               ${index + 1}
             </div>
           `).join('')}
@@ -9265,9 +9269,15 @@ function renderCardCircles(student, categoryKey) {
           <span style="color: #22c55e; font-weight: 600; font-size: 14px; margin-right: 8px;">UE:</span>
           ${quarterCircles.map((fillLevel, index) => `
             <div class="quarter-circle ${getFillLevelClass(fillLevel)}"
+                 data-category="${categoryKey}" 
+                 data-index="${index}"
+                 onclick="toggleCategoryQuarterCircle('${student.id}', '${categoryKey}', ${index})"
                  title="Klicken: 0% → 25% → 50% → 75% → Löschen"></div>
           `).join('')}
-          <div class="quarter-circle add-circle-btn" title="Viertel-Kreis hinzufügen">+</div>
+          <div class="quarter-circle add-circle-btn" 
+               data-category="${categoryKey}"
+               onclick="addCategoryQuarterCircle('${student.id}', '${categoryKey}')"
+               title="Viertel-Kreis hinzufügen">+</div>
         </div>
       </div>
     `;
