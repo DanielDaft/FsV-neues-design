@@ -9611,16 +9611,32 @@ function getCurrentStudentId() {
 }
 
 function refreshCardView(studentId) {
-  // Direkte Aktualisierung ohne getCurrentStudent
+  // Nur die Karten-Bereiche aktualisieren, nicht Schülerinfo oder Geleistete Fahrten
   const student = StorageManager.getStudentById(studentId, currentClass);
-  if (student && document.getElementById('cardView')) {
-    const cardViewHTML = renderCardView(student);
-    const cardViewElement = document.getElementById('cardView');
+  const cardViewElement = document.getElementById('cardView');
+  
+  if (student && cardViewElement) {
+    // Finde den .card-layout Container in der Kartenansicht
+    const cardLayoutElement = cardViewElement.querySelector('.card-layout');
     
-    // Nur den Inhalt der Kartenansicht aktualisieren, nicht das ganze Element
-    cardViewElement.innerHTML = cardViewHTML;
-    
-    console.log('✅ Kartenansicht aktualisiert für Schüler:', studentId);
+    if (cardLayoutElement) {
+      // Nur den Karten-Layout-Bereich aktualisieren
+      const updatedCardHTML = renderCardView(student);
+      cardLayoutElement.outerHTML = updatedCardHTML;
+      
+      console.log('✅ Nur Karten-Layout aktualisiert für Schüler:', studentId);
+    } else {
+      console.log('⚠️ .card-layout nicht gefunden - vollständige Aktualisierung');
+      // Fallback: Nur die Geleistete Fahrten und Karten neu rendern, Schülerinfo behalten
+      const personalInfoElement = cardViewElement.querySelector('.personal-info');
+      const personalInfoHTML = personalInfoElement ? personalInfoElement.outerHTML : renderPersonalInfo(student);
+      
+      cardViewElement.innerHTML = `
+        ${personalInfoHTML}
+        ${renderFahrtenSection(student)}
+        ${renderCardView(student)}
+      `;
+    }
     
     // Event Delegation für dynamisch erstellte Kreise einrichten
     setupCardViewEventDelegation(studentId);
