@@ -3815,6 +3815,11 @@ const DEMO_STUDENTS = [
 
 // FUNKTION: Kategorien für spezifische Klassen abrufen
 function getTrainingCategoriesForClass(className) {
+  if (className === 'B') {
+    // Klasse B verwendet die vollständigen TRAINING_CATEGORIES
+    return TRAINING_CATEGORIES;
+  }
+  
   if (className === 'BE') {
     // BE verwendet B-Struktur, aber mit BE-spezifischen Texten und Inhalten
     return {
