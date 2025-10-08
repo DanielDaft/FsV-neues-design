@@ -9157,7 +9157,7 @@ function renderCardView(student) {
         </div>
       </div>
       
-      <!-- Zweite Reihe: Grundfahraufgaben (breit), Reife- und Teststufe (schmal) -->
+      <!-- Zweite Reihe: Grundfahraufgaben (breit), Reife- und Teststufe -->
       <div class="card-row card-row-unequal">
         <div class="card-column card-column-wide">
           ${renderCardCategory(student, 'grundfahraufgaben', 'GRUNDFAHRAUFGABEN', '#8B5CF6')}
@@ -9167,22 +9167,46 @@ function renderCardView(student) {
         </div>
       </div>
       
-      <!-- Dritte Reihe: Sonderfahrten (3 Spalten) -->
+      <!-- Dritte Reihe: Überlandfahrten + Autobahnfahrten (links), Dämmerung (mitte), Assistenzsysteme (rechts) -->
       <div class="card-row card-row-three">
         <div class="card-column">
-          ${renderCardCategory(student, 'uberlandfahrten', 'ÜBERLANDFAHRTEN', '#EAB308')}
-        </div>
-        <div class="card-column">
-          ${renderCardCategory(student, 'autobahn', 'AUTOBAHNFAHRTEN', '#EAB308')}
+          <div class="card-row card-row-two-small">
+            <div class="small-card-column">
+              ${renderCardCategory(student, 'uberlandfahrten', 'ÜBERLANDFAHRTEN', '#EAB308')}
+            </div>
+            <div class="small-card-column">
+              ${renderCardCategory(student, 'autobahn', 'AUTOBAHNFAHRTEN', '#EAB308')}
+            </div>
+          </div>
         </div>
         <div class="card-column">
           ${renderCardCategory(student, 'dammerung_dunkelheit', 'DÄMMERUNG/DUNKELHEIT', '#EAB308')}
         </div>
+        <div class="card-column">
+          ${renderCardCategory(student, 'fahrerassistenzsysteme', 'ASSISTENZSYSTEME', '#3B82F6')}
+        </div>
       </div>
       
-      <!-- Vierte Reihe: Situative Bausteine (die blauen Kategorien) -->
+      <!-- Vierte Reihe: Situative Bausteine (breit), Heizung + Witterung (rechts gestapelt) -->
+      <div class="card-row card-row-unequal">
+        <div class="card-column card-column-wide">
+          ${renderCardCategory(student, 'situative_bausteine', 'SITUATIVE BAUSTEINE', '#06B6D4')}
+        </div>
+        <div class="card-column card-column-narrow">
+          <div class="card-row card-row-stacked">
+            <div class="stacked-card">
+              ${renderCardCategory(student, 'heizung_lueftung', 'HEIZUNG UND LÜFTUNG', '#10B981')}
+            </div>
+            <div class="stacked-card">
+              ${renderCardCategory(student, 'witterungsverhaeltnisse', 'WITTERUNG', '#8B5CF6')}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Fünfte Reihe: Restliche situative Bausteine -->
       <div class="card-row card-row-situative">
-        ${renderSituativeBausteine(student)}
+        ${renderRestlicheSituativeBausteine(student)}
       </div>
     `;
   } else {
