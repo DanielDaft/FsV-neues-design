@@ -3733,20 +3733,8 @@ const ThemeManager = {
 
 
 
-// Test-Schüler für das neue Karten-Layout
-const DEMO_STUDENTS = [
-  {
-    id: "test-student-001",
-    name: "Max",
-    surname: "Mustermann", 
-    phone: "0171 1234567",
-    address: "Musterstraße 1",
-    postal_code: "12345",
-    city: "Berlin",
-    start_date: "2025-01-15",
-    birth_date: "1990-05-15"
-  }
-];
+// ⚠️ DEMO-DATEN ENTFERNT - KEINE AUTOMATISCHEN SCHÜLER MEHR
+const DEMO_STUDENTS = [];
 
 // FUNKTION: Kategorien für spezifische Klassen abrufen
 function getTrainingCategoriesForClass(className) {
@@ -6168,10 +6156,6 @@ function renderStudentDetail(studentId) {
 
   selectedStudent = student;
   
-  // Speichere aktuellen Schüler global für Event-Handler
-  window.currentStudentData = student;
-  window.location.hash = `#student/${studentId}`;
-  
   const classDisplayName = currentClass;
 
   let html = `
@@ -6192,19 +6176,31 @@ function renderStudentDetail(studentId) {
       </div>
     </div>
 
-    <!-- Detailansicht mit Karten-Layout -->
-    <div class="container">
-      ${renderPersonalInfo(student)}
-      ${renderFahrtenSection(student)}
-      ${renderTrainingProgress(student)}
+    <!-- Toggle Buttons -->
+    <div class="view-toggle">
+      <button id="detailViewBtn" class="toggle-btn active" onclick="switchToDetailView()">📋 Detail</button>
+      <button id="cardViewBtn" class="toggle-btn" onclick="switchToCardView()">🗂️ Karte</button>
+    </div>
+
+    <div id="detailView">
+      <div class="container">
+        ${renderPersonalInfo(student)}
+        ${renderFahrtenSection(student)}
+        ${renderTrainingProgress(student)}
+      </div>
+    </div>
+
+    <div id="cardView" class="card-view" style="display: none;">
+      ${renderCardView(student)}
     </div>
   `;
 
   document.getElementById('app').innerHTML = html;
+  currentView = 'detail';
   
-  // Event Delegation für alle Elemente in Detail-Ansicht einrichten
+  // Event Delegation für Kartenansicht einrichten
   setTimeout(() => {
-    setupDetailEventDelegation(student.id);
+    setupCardViewEventDelegation(student.id);
   }, 100);
   
   // Theme Toggle nach dem Rendering wieder einfügen
@@ -6479,80 +6475,87 @@ function renderFahrtType(student, title, category, maxCount, canAddRemove) {
 }
 
 function renderTrainingProgress(student) {
+  // Toggle-Button nur für Klasse B anzeigen
+  const showToggle = currentClass === 'B';
+  
   let html = `
     <div class="section">
       <div class="section-header">
         <div class="section-icon">📋</div>
         <div class="section-title">Ausbildungsfortschritt</div>
+        ${showToggle ? `
+        <div class="view-toggle">
+          <button id="detailViewBtn" class="view-btn active" onclick="switchToDetailView()">
+            📋 Detail
+          </button>
+          <button id="cardViewBtn" class="view-btn" onclick="switchToCardView()">
+            🗂️ Karte
+          </button>
+        </div>
+        ` : ''}
       </div>
     </div>
     
-    <!-- Kartenansicht als Standard-Detail-Design -->
-    <div class="card-layout">
+    <!-- Detailansicht (bestehend) -->
+    <div id="detailView" class="detail-view">
   `;
 
-  // Verwende das Karten-Layout für alle Klassen, nicht nur B
-  if (currentClass === 'B') {
+  Object.entries(getTrainingCategoriesForClass(currentClass)).forEach(([key, category]) => {
+    const progress = StorageManager.getProgressForStudent(student.id, currentClass);
+    const categoryProgress = progress[key] || {};
+    
+    let completedItems = 0; // Gewichtete Punkte für Prozentberechnung
+    let treatedItems = 0;   // Einfache Anzahl behandelter Items für Klammer-Anzeige
+    const totalItems = countTotalItems(category.sections);
+
+    function countCompletedItems(sections) {
+      Object.entries(sections).forEach(([sectionKey, section]) => {
+        if (section.sections) {
+          countCompletedItems(section.sections);
+        } else if (section.items) {
+          section.items.forEach(item => {
+            const status = categoryProgress[sectionKey] && categoryProgress[sectionKey][item];
+            // KORRIGIERTE 3-STUFEN-BERECHNUNG für Prozente
+            if (status === 'once') {
+              completedItems += 0.33; // 🔴 ROT (/) = 33%
+              treatedItems++; // +1 behandeltes Item
+            } else if (status === 'twice') {
+              completedItems += 0.66; // 🟡 GELB (×) = 66%
+              treatedItems++; // +1 behandeltes Item
+            } else if (status === 'thrice') {
+              completedItems += 1.0;  // 🟢 GRÜN (⊗) = 100%
+              treatedItems++; // +1 behandeltes Item
+            }
+          });
+        }
+      });
+    }
+
+    countCompletedItems(category.sections);
+
+    const percentage = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+    const expanded = key === 'grundstufe';
+
     html += `
-      <!-- Erste Reihe: Grundstufe, Aufbaustufe, Leistungsstufe (3 Spalten) -->
-      <div class="card-row card-row-three">
-        <div class="card-column">
-          ${renderCardCategory(student, 'grundstufe', 'GRUNDSTUFE', '#F59E0B')}
+      <div class="training-section">
+        <div class="training-header ${key}" onclick="toggleTrainingSection('${key}')">
+          ${renderCategoryHeader(student.id, category, key, percentage, treatedItems, totalItems)}
         </div>
-        <div class="card-column">
-          ${renderCardCategory(student, 'aufbaustufe', 'AUFBAUSTUFE', '#F97316')}
-        </div>
-        <div class="card-column">
-          ${renderCardCategory(student, 'leistungsstufe', 'LEISTUNGSSTUFE', '#EF4444')}
-        </div>
-      </div>
-      
-      <!-- Zweite Reihe: Grundfahraufgaben (breit), Reife- und Teststufe (schmal) -->
-      <div class="card-row card-row-unequal">
-        <div class="card-column card-column-wide">
-          ${renderCardCategory(student, 'grundfahraufgaben', 'GRUNDFAHRAUFGABEN', '#8B5CF6')}
-        </div>
-        <div class="card-column card-column-narrow">
-          ${renderCardCategory(student, 'reife_teststufe', 'REIFE- UND TESTSTUFE', '#22C55E')}
-        </div>
-      </div>
-      
-      <!-- Dritte Reihe: Sonderfahrten (3 Spalten) -->
-      <div class="card-row card-row-three">
-        <div class="card-column">
-          ${renderCardCategory(student, 'uberlandfahrten', 'ÜBERLANDFAHRTEN', '#EAB308')}
-        </div>
-        <div class="card-column">
-          ${renderCardCategory(student, 'autobahn', 'AUTOBAHNFAHRTEN', '#EAB308')}
-        </div>
-        <div class="card-column">
-          ${renderCardCategory(student, 'dammerung_dunkelheit', 'DÄMMERUNG/DUNKELHEIT', '#EAB308')}
+        <div id="section-${key}" class="training-content ${expanded ? 'expanded' : ''}">
+          <div class="training-items">
+            ${renderTrainingItems(category.sections, key, student.id)}
+          </div>
         </div>
       </div>
     `;
-  } else {
-    // Für andere Klassen: Automatisches Layout basierend auf verfügbaren Kategorien
-    const categories = getTrainingCategoriesForClass(currentClass);
-    const categoryEntries = Object.entries(categories);
-    
-    // Erstelle Rows mit je 3 Kategorien
-    for (let i = 0; i < categoryEntries.length; i += 3) {
-      html += `<div class="card-row card-row-three">`;
-      
-      for (let j = 0; j < 3 && (i + j) < categoryEntries.length; j++) {
-        const [categoryKey, category] = categoryEntries[i + j];
-        html += `
-          <div class="card-column">
-            ${renderCardCategory(student, categoryKey, category.name.toUpperCase(), category.color || '#6B7280')}
-          </div>
-        `;
-      }
-      
-      html += `</div>`;
-    }
-  }
+  });
 
-  html += `</div>`; // Schließe card-layout
+  html += `
+    </div>
+    
+    <!-- Kartenansicht (neu) - nur für Klasse B -->
+    ${showToggle ? renderCardView(student) : ''}
+  `;
 
   return html;
 }
@@ -9182,7 +9185,7 @@ function renderCardCircles(student, categoryKey) {
     const quarterCircles = progress[`${categoryKey}_header_quarters`] || [];
 
     return `
-      <div class="card-circles grundstufe-circles" data-category="${categoryKey}">
+      <div class="card-circles grundstufe-circles">
         <div class="circle-row">
           <span style="color: #22c55e; font-weight: 600; font-size: 14px; margin-right: 8px;">UE:</span>
           ${ueCircles.map((circle, index) => `
@@ -9215,7 +9218,7 @@ function renderCardCircles(student, categoryKey) {
     const quarterCircles = progress[`${categoryKey}_header_quarters`] || [];
 
     return `
-      <div class="card-circles grundstufe-circles" data-category="${categoryKey}">
+      <div class="card-circles grundstufe-circles">
         <div class="circle-row">
           <span style="color: #3b82f6; font-weight: 600; font-size: 14px; margin-right: 8px;">PS:</span>
           ${blueCircles.map((filled, index) => `
@@ -9558,26 +9561,6 @@ function toggleProgressItemCard(studentId, categoryKey, sectionKey, itemKey, eve
   updateCategoryProgress(categoryKey, studentId);
 }
 
-function getCurrentStudent() {
-  // Aktuellen Schüler aus dem DOM extrahieren
-  const urlParts = window.location.hash.split('/');
-  if (urlParts.length >= 2 && urlParts[0] === '#student') {
-    const studentId = urlParts[1];
-    const className = currentClass;
-    
-    if (studentId && className) {
-      return StorageManager.getStudentById(studentId, className);
-    }
-  }
-  
-  // Fallback: Schüler aus global gespeicherten Daten
-  if (window.currentStudentData) {
-    return window.currentStudentData;
-  }
-  
-  return null;
-}
-
 function getCurrentStudentId() {
   const student = getCurrentStudent();
   return student ? student.id : null;
@@ -9692,170 +9675,6 @@ function setupCardViewEventDelegation(studentId) {
       
       if (categoryKey && !isNaN(circleNumber)) {
         toggleBlueCircle(studentId, categoryKey, circleNumber);
-        event.preventDefault();
-        return false;
-      }
-    }
-  }
-}
-
-// Vereinheitlichte Event Delegation für Detail-Ansicht mit Karten-Layout
-function setupDetailEventDelegation(studentId) {
-  const container = document.querySelector('.container');
-  if (!container) return;
-  
-  // Entferne vorherige Event Listener
-  container.removeEventListener('click', handleDetailClick);
-  
-  // Füge Event Listener hinzu
-  container.addEventListener('click', handleDetailClick);
-  
-  function handleDetailClick(event) {
-    const target = event.target;
-    const currentStudentObj = getCurrentStudent();
-    if (!currentStudentObj) return;
-    
-    console.log('Detail Click Event:', target.classList.toString(), target);
-    
-    // Checkboxen für Fortschritt-Items (ALLE CHECKBOXEN)
-    if (target.classList.contains('progress-checkbox')) {
-      const progressItem = target.closest('.progress-item');
-      if (progressItem) {
-        const clickableItem = target.closest('[onclick]');
-        if (clickableItem && clickableItem.onclick) {
-          clickableItem.onclick(event);
-          event.preventDefault();
-          return false;
-        }
-        
-        // Fallback für Card-Items
-        const cardItem = target.closest('.section-item');
-        if (cardItem && cardItem.onclick) {
-          cardItem.onclick(event);
-          event.preventDefault();
-          return false;
-        }
-      }
-    }
-    
-    // UE Kreise - Hinzufügen
-    if (target.classList.contains('add-circle-btn') && target.classList.contains('ue-circle')) {
-      const categoryDiv = target.closest('[data-category]');
-      const categoryKey = categoryDiv?.getAttribute('data-category');
-      
-      console.log('UE Add Circle clicked:', categoryKey);
-      
-      if (categoryKey) {
-        addCategoryUECircle(currentStudentObj.id, categoryKey);
-        event.preventDefault();
-        return false;
-      }
-    }
-    
-    // UE Kreise - Entfernen
-    if (target.classList.contains('ue-circle') && target.classList.contains('full') && !target.classList.contains('add-circle-btn')) {
-      const categoryDiv = target.closest('[data-category]');
-      const categoryKey = categoryDiv?.getAttribute('data-category');
-      
-      // Index aus dem Text des Kreises extrahieren
-      const circleNumber = parseInt(target.textContent) - 1;
-      
-      console.log('UE Remove Circle clicked:', categoryKey, circleNumber);
-      
-      if (categoryKey && !isNaN(circleNumber)) {
-        removeCategoryUECircle(currentStudentObj.id, categoryKey, circleNumber);
-        event.preventDefault();
-        return false;
-      }
-    }
-    
-    // Quarter Kreise - Hinzufügen
-    if (target.classList.contains('add-circle-btn') && target.classList.contains('quarter-circle')) {
-      const categoryDiv = target.closest('[data-category]');
-      const categoryKey = categoryDiv?.getAttribute('data-category');
-      
-      console.log('Quarter Add Circle clicked:', categoryKey);
-      
-      if (categoryKey) {
-        addCategoryQuarterCircle(currentStudentObj.id, categoryKey);
-        event.preventDefault();
-        return false;
-      }
-    }
-    
-    // Quarter Kreise - Toggle
-    if (target.classList.contains('quarter-circle') && !target.classList.contains('add-circle-btn')) {
-      const categoryDiv = target.closest('[data-category]');
-      const categoryKey = categoryDiv?.getAttribute('data-category');
-      
-      // Index bestimmen (alle Quarter-Kreise in der Reihe)
-      const quarterRow = target.parentElement;
-      const allQuarterCircles = Array.from(quarterRow.querySelectorAll('.quarter-circle:not(.add-circle-btn)'));
-      const circleIndex = allQuarterCircles.indexOf(target);
-      
-      console.log('Quarter Toggle Circle clicked:', categoryKey, circleIndex);
-      
-      if (categoryKey && circleIndex !== -1) {
-        toggleCategoryQuarterCircle(currentStudentObj.id, categoryKey, circleIndex);
-        event.preventDefault();
-        return false;
-      }
-    }
-    
-    // Blaue PS Kreise - Toggle
-    if (target.classList.contains('ue-circle') && (target.classList.contains('blue-empty') || target.classList.contains('blue-filled'))) {
-      const categoryDiv = target.closest('[data-category]');
-      const categoryKey = categoryDiv?.getAttribute('data-category');
-      
-      // Index aus dem Text des Kreises extrahieren
-      const circleNumber = parseInt(target.textContent) - 1;
-      
-      console.log('Blue PS Circle clicked:', categoryKey, circleNumber);
-      
-      if (categoryKey && !isNaN(circleNumber)) {
-        toggleBlueCircle(currentStudentObj.id, categoryKey, circleNumber);
-        event.preventDefault();
-        return false;
-      }
-    }
-    
-    // Fahrt Kreise - für Übungsfahrten etc.
-    if (target.classList.contains('circle-btn')) {
-      const category = target.getAttribute('data-category');
-      const index = parseInt(target.getAttribute('data-index'));
-      
-      console.log('Fahrt Circle clicked:', category, index);
-      
-      if (category && !isNaN(index)) {
-        if (target.onclick) {
-          target.onclick(event);
-        }
-        event.preventDefault();
-        return false;
-      }
-    }
-    
-    // Fahrt Buttons - normale Fahrt-Buttons
-    if (target.classList.contains('fahrt-btn')) {
-      const category = target.getAttribute('data-category');
-      const index = parseInt(target.getAttribute('data-index'));
-      
-      console.log('Fahrt Button clicked:', category, index);
-      
-      if (category && !isNaN(index)) {
-        if (target.onclick) {
-          target.onclick(event);
-        }
-        event.preventDefault();
-        return false;
-      }
-    }
-    
-    // Training Section Headers (Aufklappen/Zuklappen)
-    if (target.closest('.training-header')) {
-      const header = target.closest('.training-header');
-      if (header && header.onclick) {
-        header.onclick(event);
         event.preventDefault();
         return false;
       }
