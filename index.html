@@ -6176,22 +6176,11 @@ function renderStudentDetail(studentId) {
       </div>
     </div>
 
-    <!-- Toggle Buttons -->
-    <div class="view-toggle">
-      <button id="detailViewBtn" class="toggle-btn active" onclick="switchToDetailView()">📋 Detail</button>
-      <button id="cardViewBtn" class="toggle-btn" onclick="switchToCardView()">🗂️ Karte</button>
-    </div>
-
-    <div id="detailView">
-      <div class="container">
-        ${renderPersonalInfo(student)}
-        ${renderFahrtenSection(student)}
-        ${renderTrainingProgress(student)}
-      </div>
-    </div>
-
-    <div id="cardView" class="card-view" style="display: none;">
-      ${renderCardView(student)}
+    <!-- Detailansicht mit Karten-Layout -->
+    <div class="container">
+      ${renderPersonalInfo(student)}
+      ${renderFahrtenSection(student)}
+      ${renderTrainingProgress(student)}
     </div>
   `;
 
