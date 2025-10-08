@@ -3733,8 +3733,21 @@ const ThemeManager = {
 
 
 
-// ⚠️ DEMO-DATEN ENTFERNT - KEINE AUTOMATISCHEN SCHÜLER MEHR
-const DEMO_STUDENTS = [];
+// Test-Schüler für Klasse B Karten-Layout Test
+const DEMO_STUDENTS = [
+  {
+    id: "test-student-b-001",
+    name: "Max",
+    surname: "Mustermann", 
+    phone: "0171 1234567",
+    address: "Musterstraße 1",
+    postal_code: "12345",
+    city: "Berlin",
+    start_date: "2025-01-15",
+    birth_date: "1990-05-15",
+    class: "B"
+  }
+];
 
 // FUNKTION: Kategorien für spezifische Klassen abrufen
 function getTrainingCategoriesForClass(className) {
