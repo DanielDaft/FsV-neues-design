@@ -9554,6 +9554,26 @@ function toggleProgressItemCard(studentId, categoryKey, sectionKey, itemKey, eve
   updateCategoryProgress(categoryKey, studentId);
 }
 
+function getCurrentStudent() {
+  // Aktuellen Schüler aus dem DOM extrahieren
+  const urlParts = window.location.hash.split('/');
+  if (urlParts.length >= 2 && urlParts[0] === '#student') {
+    const studentId = urlParts[1];
+    const className = currentClass;
+    
+    if (studentId && className) {
+      return StorageManager.getStudentById(studentId, className);
+    }
+  }
+  
+  // Fallback: Schüler aus global gespeicherten Daten
+  if (window.currentStudentData) {
+    return window.currentStudentData;
+  }
+  
+  return null;
+}
+
 function getCurrentStudentId() {
   const student = getCurrentStudent();
   return student ? student.id : null;
