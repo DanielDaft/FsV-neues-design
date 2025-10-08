@@ -6185,11 +6185,10 @@ function renderStudentDetail(studentId) {
   `;
 
   document.getElementById('app').innerHTML = html;
-  currentView = 'detail';
   
-  // Event Delegation für Kartenansicht einrichten
+  // Event Delegation für Karten-Elemente in Detail-Ansicht einrichten
   setTimeout(() => {
-    setupCardViewEventDelegation(student.id);
+    setupDetailCardEventDelegation(student.id);
   }, 100);
   
   // Theme Toggle nach dem Rendering wieder einfügen
