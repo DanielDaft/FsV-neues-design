@@ -6505,7 +6505,6 @@ function renderTrainingProgress(student) {
         <div class="section-icon">📋</div>
         <div class="section-title">Ausbildungsfortschritt</div>
         ${showToggle ? `
-        ${currentClass === 'B' ? `
         <div class="view-toggle">
           <button id="detailViewBtn" class="view-btn" onclick="switchToDetailView()">
             📋 Detail
@@ -6514,7 +6513,6 @@ function renderTrainingProgress(student) {
             🗂️ Karte
           </button>
         </div>
-        ` : ''}
         ` : ''}
       </div>
     </div>
