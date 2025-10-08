@@ -9218,7 +9218,7 @@ function renderCardCircles(student, categoryKey) {
     const quarterCircles = progress[`${categoryKey}_header_quarters`] || [];
 
     return `
-      <div class="card-circles grundstufe-circles">
+      <div class="card-circles grundstufe-circles" data-category="${categoryKey}">
         <div class="circle-row">
           <span style="color: #3b82f6; font-weight: 600; font-size: 14px; margin-right: 8px;">PS:</span>
           ${blueCircles.map((filled, index) => `
