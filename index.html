@@ -3619,24 +3619,25 @@ body .training-header .training-info-with-circles {
 }
 }
 
-/* CSS für das spezielle Layout wie im Bild */
-.card-row-two-small {
+/* CSS für das spezielle Layout genau nach Beschreibung */
+.card-row-two {
   display: flex;
-  gap: 6px;
+  gap: 12px;
+  align-items: stretch;
 }
 
-.small-card-column {
+.card-row-two .card-column {
   flex: 1;
 }
 
-.card-row-stacked {
+.right-column-stacked {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.stacked-card {
-  flex: 1;
+.right-column-stacked .card-category {
+  margin-bottom: 6px;
 }
 
 /* Responsive Layout für situative Bausteine */
