@@ -9171,68 +9171,20 @@ function renderCardView(student) {
   // Spezielle Behandlung für Klasse B (behält das Original-Layout)
   if (currentClass === 'B') {
     html += `
-      <!-- Erste Reihe: Grundstufe, Aufbaustufe, Leistungsstufe (3 Spalten) -->
-      <div class="card-row card-row-three">
-        <div class="card-column">
-          ${renderCardCategory(student, 'grundstufe', 'GRUNDSTUFE', '#F59E0B')}
-        </div>
-        <div class="card-column">
-          ${renderCardCategory(student, 'aufbaustufe', 'AUFBAUSTUFE', '#F97316')}
-        </div>
-        <div class="card-column">
-          ${renderCardCategory(student, 'leistungsstufe', 'LEISTUNGSSTUFE', '#EF4444')}
-        </div>
-      </div>
-      
-      <!-- Zweite Reihe: Grundfahraufgaben (breit), Reife- und Teststufe -->
-      <div class="card-row card-row-unequal">
-        <div class="card-column card-column-wide">
-          ${renderCardCategory(student, 'grundfahraufgaben', 'GRUNDFAHRAUFGABEN', '#8B5CF6')}
-        </div>
-        <div class="card-column card-column-narrow">
-          ${renderCardCategory(student, 'reife_teststufe', 'REIFE- UND TESTSTUFE', '#22C55E')}
-        </div>
-      </div>
-      
-      <!-- Dritte Reihe: Überlandfahrten + Autobahnfahrten (links), Dämmerung (mitte), Assistenzsysteme (rechts) -->
-      <div class="card-row card-row-three">
-        <div class="card-column">
-          <div class="card-row card-row-two-small">
-            <div class="small-card-column">
-              ${renderCardCategory(student, 'uberlandfahrten', 'ÜBERLANDFAHRTEN', '#EAB308')}
-            </div>
-            <div class="small-card-column">
-              ${renderCardCategory(student, 'autobahn', 'AUTOBAHNFAHRTEN', '#EAB308')}
-            </div>
-          </div>
-        </div>
-        <div class="card-column">
-          ${renderCardCategory(student, 'dammerung_dunkelheit', 'DÄMMERUNG/DUNKELHEIT', '#EAB308')}
-        </div>
-        <div class="card-column">
-          ${renderCardCategory(student, 'fahrerassistenzsysteme', 'ASSISTENZSYSTEME', '#3B82F6')}
-        </div>
-      </div>
-      
-      <!-- Vierte Reihe: Situative Bausteine (breit), Heizung + Witterung (rechts gestapelt) -->
-      <div class="card-row card-row-unequal">
-        <div class="card-column card-column-wide">
-          ${renderCardCategory(student, 'situative_bausteine', 'SITUATIVE BAUSTEINE', '#06B6D4')}
-        </div>
-        <div class="card-column card-column-narrow">
-          <div class="card-row card-row-stacked">
-            <div class="stacked-card">
-              ${renderCardCategory(student, 'heizung_lueftung', 'HEIZUNG UND LÜFTUNG', '#10B981')}
-            </div>
-            <div class="stacked-card">
-              ${renderCardCategory(student, 'witterungsverhaeltnisse', 'WITTERUNG', '#8B5CF6')}
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Fünfte Reihe: Restliche situative Bausteine -->
+      <!-- Alle Boxen einheitlich: 3 pro Reihe mit 5mm Abstand -->
       <div class="card-row card-row-situative">
+        ${renderCardCategory(student, 'grundstufe', 'GRUNDSTUFE', '#F59E0B')}
+        ${renderCardCategory(student, 'aufbaustufe', 'AUFBAUSTUFE', '#F97316')}
+        ${renderCardCategory(student, 'leistungsstufe', 'LEISTUNGSSTUFE', '#EF4444')}
+        ${renderCardCategory(student, 'grundfahraufgaben', 'GRUNDFAHRAUFGABEN', '#8B5CF6')}
+        ${renderCardCategory(student, 'reife_teststufe', 'REIFE- UND TESTSTUFE', '#22C55E')}
+        ${renderCardCategory(student, 'uberlandfahrten', 'ÜBERLANDFAHRTEN', '#EAB308')}
+        ${renderCardCategory(student, 'autobahn', 'AUTOBAHNFAHRTEN', '#EAB308')}
+        ${renderCardCategory(student, 'dammerung_dunkelheit', 'DÄMMERUNG/DUNKELHEIT', '#EAB308')}
+        ${renderCardCategory(student, 'fahrerassistenzsysteme', 'ASSISTENZSYSTEME', '#3B82F6')}
+        ${renderCardCategory(student, 'situative_bausteine', 'SITUATIVE BAUSTEINE', '#06B6D4')}
+        ${renderCardCategory(student, 'heizung_lueftung', 'HEIZUNG UND LÜFTUNG', '#10B981')}
+        ${renderCardCategory(student, 'witterungsverhaeltnisse', 'WITTERUNG', '#8B5CF6')}
         ${renderRestlicheSituativeBausteine(student)}
       </div>
     `;
