@@ -6182,7 +6182,7 @@ function renderStudentDetail(studentId) {
       <button id="cardViewBtn" class="toggle-btn" onclick="switchToCardView()">🗂️ Karte</button>
     </div>
 
-    <div id="detailView">
+    <div id="detailView" style="display: none;">
       <div class="container">
         ${renderPersonalInfo(student)}
         ${renderFahrtenSection(student)}
@@ -6190,8 +6190,12 @@ function renderStudentDetail(studentId) {
       </div>
     </div>
 
-    <div id="cardView" class="card-view" style="display: none;">
-      ${renderCardView(student)}
+    <div id="cardView" class="card-view">
+      <div class="container">
+        ${renderPersonalInfo(student)}
+        ${renderFahrtenSection(student)}
+        ${renderCardView(student)}
+      </div>
     </div>
   `;
 
