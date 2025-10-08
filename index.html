@@ -9628,12 +9628,11 @@ function renderSonderfahrtenItemCard(studentId, categoryKey, sectionKey, item) {
 // KARTENANSICHT VERWENDET JETZT DIE GLEICHEN FUNKTIONEN WIE DETAILANSICHT
 // Keine separaten Funktionen mehr nötig - alles läuft über die bestehenden Detail-Funktionen
 
-function renderSituativeBausteine(student) {
-  // ALLE blauen Kategorien - situative Bausteine
+function renderRestlicheSituativeBausteine(student) {
+  // Restliche blaue Kategorien - die noch nicht platziert wurden
   const situativeCategories = [
-    'situative_bausteine',
-    'fahrerassistenzsysteme',
     'beim_fahrer',
+    'betriebs_verkehrssicherheit',
     'heizung_luftung',
     'betriebs_verkehrssicherheit',
     'witterung'
